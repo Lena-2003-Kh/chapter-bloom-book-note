@@ -1,0 +1,28 @@
+<%- include('partials/header') %>
+
+<form action="/signup" method="post">
+    <label>Username:</label>
+    <input type="text" name="username" required>
+    <label>Email:</label>
+    <input type="text" name="email" required>
+    <label>Password:</label>
+    <input type="password" name="password" required>
+    <button type="submit" id="sign">Sign Up</button>
+  </form>
+  <a href="/auth/google" class="google-signin"><i class="fab fa-google"></i> Sign Up With Google</a>
+  <script>
+    const form = document.querySelector("form");
+  const addButton = document.getElementById("sign"); // Matching the button's ID
+  const loadingMessage = document.getElementById("loadingMessage");
+  
+    form.addEventListener("submit", function (event) {
+      // Disable the button to prevent multiple submissions
+      addButton.disabled = true;
+      addButton.textContent = "Signing Up.....";  // Optional: Change the button text
+      loadingMessage.style.display = "block"; // Show loading message
+  
+      
+    });
+  </script>
+  
+  <%- include('partials/footer') %>

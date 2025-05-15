@@ -1,0 +1,34 @@
+<%- include('partials/header') %>
+
+<h1>Shared Books 📚</h1>
+
+<% if (!books || books.length === 0) { %>
+  <p>No shared books yet.</p>
+<% } else { %>
+  <ul>
+    <% books.forEach(item => { %>
+      <li>
+        <img src="<%= item.cover_url %>" alt="Book Cover">
+        <h2><%= item.title %></a></h2>
+        <p>Author: <%= item.author %></p>
+        <p>Shared by: <%= item.username || 'Anonymous' %></p>
+        <p>Average Rating: <%= Number(item.average_rating) ? Number(item.average_rating).toFixed(1) + ' / 5' : 'No ratings yet' %></p>
+        <p><%= item.notes %></p>
+
+        <!-- Rating Form (only for authenticated users) -->
+        <% if (typeof user !== 'undefined' && user) { %>
+          <h3>Rate this Book</h3>
+          <form action="/rate/<%= item.id %>" method="POST">
+            <label for="rating">Rating (1-5):</label>
+            <input type="number" name="rating" min="1" max="5" required>
+            <button type="submit">Submit Rating</button>
+          </form>
+        <% } else { %>
+          <p><a href="/login">Log in</a> to rate this book.</p>
+        <% } %>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<%- include('partials/footer') %>

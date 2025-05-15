@@ -1,0 +1,301 @@
+ /* === Base Styles === */ 
+ html, body {
+  height: 100%; /* Ensure the page takes up full viewport height */
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Georgia', serif;
+  background-color: #FAF3E0; /* Warm background */
+  color: #333;
+  line-height: 1.6;
+  display: block; /* Remove flexbox properties */
+  padding-bottom: 60px; /* Add space for footer */
+}
+
+header {
+  background-color: #DAB894;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+}
+
+header nav a {
+  margin: 0 10px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+main {
+  max-width: 960px;
+  margin: auto;
+  padding: 1.5rem;
+  padding-bottom: 2rem; /* Add some bottom padding to avoid overlapping with the footer */
+  min-height: calc(100vh - 200px); /* Ensure main content takes at least the space between header and footer */
+}
+
+footer {
+  background-color: #DAB894;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  position: scroll; /* Fix the footer at the bottom of the screen */
+  bottom: 0;
+  width: 100%;
+}
+
+/* === Book List === */
+.book-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.book-list li {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.book-list img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.book-list h3 {
+  margin: 0.5rem 0 0.25rem;
+}
+
+.book-list form {
+  margin-top: 0.5rem;
+}
+
+/* === Forms === */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%; /* Ensure form takes full width */
+}
+
+form input[type="text"],
+form input[type="date"],
+form input[type="number"],
+form select,
+form textarea {
+  padding: 0.75rem; /* Increase padding for larger fields */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: inherit;
+  width: 100%; /* Ensure fields take full width */
+  box-sizing: border-box; /* Include padding and border in width calculation */
+}
+
+form button {
+  padding: 0.6rem;
+  background-color: #DAB894;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #c49b72;
+}
+
+/* === Detail View === */
+img[alt="Book Cover"] {
+  max-width: 300px;
+  margin-bottom: 1rem;
+}
+
+/* === Sort Dropdown === */
+form select {
+  width: 100%; /* Make select field take full width */
+  max-width: none; /* Remove any max-width */
+}
+
+/* === Link Styles for Edit and Delete === */
+a.edit,
+a.delete {
+  text-decoration: none; /* Remove underline */
+  padding: 0.5rem 1rem; /* Add padding for better clickability */
+  border-radius: 5px; /* Rounded corners */
+  font-weight: bold;
+  color: white; /* White text color */
+  font-size: 1rem;
+  display: inline-block;
+  text-align: center;
+  margin: 0.5rem 0; /* Space between links */
+  cursor: pointer;
+  width: auto;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for hover effects */
+}
+
+/* === Edit Link Styles === */
+a.edit {
+  background-color: #DAB894; /* Background color for Edit */
+}
+
+a.edit:hover {
+  background-color: #c49b72; /* Darker background on hover for Edit */
+  color: white; /* White text color on hover */
+}
+
+/* === Delete Link Styles === */
+a.delete {
+  background-color: #F44336; /* Background color for Delete */
+}
+
+a.delete:hover {
+  background-color: #e53935; /* Darker background on hover for Delete */
+  color: white; /* White text color on hover */
+}
+/* === Cancel Link Styles === */
+a.cancel {
+  text-decoration: none; /* Remove underline */
+  padding: 0.5rem 1rem; /* Add padding for better clickability */
+  border-radius: 5px; /* Rounded corners */
+  font-weight: bold;
+  color: white; /* White text color */
+  font-size: 1rem;
+  display: inline-block;
+  text-align: center;
+  margin: 0.5rem 0; /* Space between links */
+  cursor: pointer;
+  width: auto;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for hover effects */
+}
+
+/* === Cancel Link Background === */
+a.cancel {
+  background-color: #FFC107; /* Amber background for Cancel */
+}
+
+a.cancel:hover {
+  background-color: #ffb300; /* Darker amber background on hover for Cancel */
+  color: white; /* White text color on hover */
+}
+.note{
+  font-size: 1rem; /* Normal font size for the post content */
+  
+  margin-bottom: 15px; /* Adds space below the content */
+
+  word-wrap: break-word; /* Ensures long words break and don't overflow */
+  overflow-wrap: break-word; /* Another property to handle overflow of long words */
+  max-width: 100%; /* Prevents it from exceeding the container width */
+}
+
+/* === Forms === */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+form input[type="text"],
+form input[type="password"] {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+form button {
+  padding: 0.75rem;
+  background-color: #DAB894;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #c49b72;
+}
+
+/* === Google Sign Up Button === */
+.google-signin {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #4285F4;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.google-signin:hover {
+  background-color: #3367D6;
+}
+/* === Log Out Link Styles === */
+a.Log {
+  text-decoration: none; /* Remove underline */
+  padding: 0.75rem 1.5rem; /* Add padding for better clickability */
+  border-radius: 5px; /* Rounded corners */
+  font-weight: bold; /* Bold text */
+  color: white; /* White text color */
+  font-size: 1rem; /* Font size */
+  display: inline-block;
+  text-align: center;
+  margin: 0.5rem 0; /* Space between links */
+  cursor: pointer;
+  width: auto;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for hover effects */
+  background-color: #20C997; /* Background color for Log Out (teal) */
+}
+
+a.Log:hover {
+  background-color: #1c8f7a; /* Darker teal background on hover */
+  color: white; /* White text color on hover */
+}
+
+
+/* === Media Queries === */
+@media (max-width: 768px) {
+  header nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .book-list {
+    grid-template-columns: 1fr;
+  }
+
+  form {
+    width: 100%;
+  }
+}

@@ -1,0 +1,39 @@
+<%- include('partials/header') %>
+
+<h2>Edit Book: <%= book.title %></h2>
+
+<!-- Pre-filled form for editing book details -->
+<form action="/edit/<%= book.id %>" method="POST">
+  <label>Title:</label>
+  <input type="text" name="title" value="<%= book.title %>" required>
+
+  <label>Author:</label>
+  <input type="text" name="author" value="<%= book.author %>">
+
+  <label>Date Read:</label>
+  <input type="date" name="read_date" id="read_date" value="<%= book.read_date %>">
+
+
+
+  <label>Rating (1-5):</label>
+  <input type="number" name="rating" value="<%= book.rating %>" min="1" max="5" required>
+
+  <label>Cover ID:</label>
+  <input type="text" name="cover_url" value="<%= book.cover_id %>" required>
+
+  <label>Cover ID Type:</label>
+  <select name="cover_id_type">
+    <option value="isbn" <%= book.cover_id_type === 'isbn' ? 'selected' : '' %>>ISBN</option>
+    <option value="olid" <%= book.cover_id_type === 'olid' ? 'selected' : '' %>>OLID</option>
+  </select>
+
+  <label>Notes:</label>
+  <textarea name="notes" rows="6"><%= book.notes %></textarea>
+  <label>
+    <input type="checkbox" name="shared" <%= book.shared ? "checked" : "" %>> Share this book with others
+  </label>
+  
+  <button type="submit">Update Book</button>
+</form>
+
+<%- include('partials/footer') %>

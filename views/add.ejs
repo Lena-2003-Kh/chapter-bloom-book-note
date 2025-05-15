@@ -1,0 +1,54 @@
+<%- include('partials/header') %>
+
+<h2>Add New Book</h2>
+
+<form action="/add" method="POST">
+  <label>Title:</label>
+  <input type="text" name="title" value="<%= title %>" required>
+
+  <label>Author:</label>
+  <input type="text" name="author" value="<%= author %>">
+
+  <label>Date Read:</label>
+  <input type="date" name="read_date" value="<%= read_date %>" required>
+
+  <label>Rating (1-5):</label>
+  <input type="number" name="rating" value="<%= rating %>" min="1" max="5" required>
+
+  <label>Cover ID (ISBN or OLID):</label>
+<input type="text" name="cover_id" value="<%= cover_id %>" required>
+
+
+
+
+  <label>Cover ID Type:</label>
+  <select name="cover_id_type">
+    <!-- Only add selected to options if book is defined and its cover_url includes 'isbn' or 'olid' -->
+    <option value="isbn" <%= cover_id_type === 'isbn' ? 'selected' : '' %>>ISBN</option>
+    <option value="olid" <%= cover_id_type === 'olid' ? 'selected' : '' %>>OLID</option>
+  </select>
+
+  <label>Notes:</label>
+  <textarea name="notes" rows="6"><%= notes || '' %></textarea>
+  <label>
+    <input type="checkbox" name="shared"> Share this book with others
+  </label>
+  
+  <button type="submit" id="add">Add</button>
+</form>
+<script>
+  const form = document.querySelector("form");
+const addButton = document.getElementById("add"); // Matching the button's ID
+const loadingMessage = document.getElementById("loadingMessage");
+
+  form.addEventListener("submit", function (event) {
+    // Disable the button to prevent multiple submissions
+    addButton.disabled = true;
+    addButton.textContent = "Adding...";  // Optional: Change the button text
+    loadingMessage.style.display = "block"; // Show loading message
+
+  
+  });
+</script>
+
+<%- include('partials/footer') %>

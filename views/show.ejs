@@ -1,0 +1,20 @@
+<%- include('partials/header') %>
+
+<h2><%= book.title %> by <%= book.author %></h2>
+
+<!-- Book cover -->
+<img src="<%= book.cover_url %>" alt="Book Cover">
+
+
+<p><strong>Date Read:</strong> <%= book.read_date.toDateString() %></p>
+<p><strong>Rating:</strong> <%= book.rating %>/5</p>
+<p><strong>Notes:</strong></p> 
+<p><%= book.notes %></p>
+
+
+<a href="/edit/<%= book.id %>">Edit</a>
+<form action="/delete/<%= book.id %>" method="POST" style="display:inline;">
+  <button type="submit">Delete</button>
+</form>
+
+<%- include('partials/footer') %>
