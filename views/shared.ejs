@@ -2,27 +2,33 @@
 
 <h1>Shared Books 📚</h1>
 
+<% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+  <p style="color: red;"><%= errorMessage %></p>
+<% } %>
+
 <% if (!books || books.length === 0) { %>
   <p>No shared books yet.</p>
 <% } else { %>
-  <ul>
+  <ul style="list-style: none; padding: 0;">
     <% books.forEach(item => { %>
-      <li>
-        <img src="<%= item.cover_url %>" alt="Book Cover">
-        <h2><%= item.title %></a></h2>
-        <p>Author: <%= item.author %></p>
-        <p>Shared by: <%= item.username || 'Anonymous' %></p>
-        <p>Average Rating: <%= Number(item.average_rating) ? Number(item.average_rating).toFixed(1) + ' / 5' : 'No ratings yet' %></p>
-        <p><%= item.notes %></p>
+      <li style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 20px;">
+        <img src="<%= item.cover_url %>" alt="Cover for <%= item.title %>" style="max-width: 150px; height: auto;">
+        <h2><%= item.title %></h2>
+        <p><strong>Author:</strong> <%= item.author %></p>
+        <p><strong>Shared by:</strong> <%= item.username || 'Anonymous' %></p>
+        <p><strong>Average Rating:</strong> <%= Number(item.average_rating) ? Number(item.average_rating).toFixed(1) + ' / 5' : 'No ratings yet' %></p>
+        <p><%= item.notes || 'No notes provided.' %></p>
 
-        <!-- Rating Form (only for authenticated users) -->
-        <% if (typeof user !== 'undefined' && user) { %>
+        <!-- Rating Form (only for authenticated users who don't own the book) -->
+        <% if (typeof user !== 'undefined' && user && user.id !== item.user_id) { %>
           <h3>Rate this Book</h3>
           <form action="/rate/<%= item.id %>" method="POST">
-            <label for="rating">Rating (1-5):</label>
-            <input type="number" name="rating" min="1" max="5" required>
+            <label for="rating-<%= item.id %>">Rating (1-5):</label>
+            <input type="number" id="rating-<%= item.id %>" name="rating" min="1" max="5" required>
             <button type="submit">Submit Rating</button>
           </form>
+          <% } else if (typeof user !== 'undefined' && user && user.id === item.user_id) { %>
+          
         <% } else { %>
           <p><a href="/login">Log in</a> to rate this book.</p>
         <% } %>
