@@ -28,7 +28,7 @@
             <button type="submit">Submit Rating</button>
           </form>
           <% } else if (typeof user !== 'undefined' && user && user.id === item.user_id) { %>
-          
+            <p>You cannot rate your own book</p>
         <% } else { %>
           <p><a href="/login">Log in</a> to rate this book.</p>
         <% } %>

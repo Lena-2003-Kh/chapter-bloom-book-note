@@ -12,7 +12,7 @@ import GoogleStrategy from "passport-google-oauth2";
 
 const PgSessionStore = pgSession(session);
 const app = express();
-const port = process.env.PORT;
+const port = 3000;
 const saltRounds = 12;
 env.config();
 
