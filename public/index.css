@@ -7,6 +7,7 @@
 
 html {
   scroll-behavior: smooth;
+  height: 100%; /* Ensure html takes full viewport height */
 }
 
 body {
@@ -15,6 +16,9 @@ body {
   color: #2c2c2c;
   line-height: 1.6;
   padding: 1rem;
+  min-height: 100%; /* Ensure body takes at least full viewport height */
+  display: flex; /* Use flexbox to structure the layout */
+  flex-direction: column; /* Stack header, main, footer vertically */
 }
 
 /* Header */
@@ -65,6 +69,7 @@ main, form {
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  flex: 1; /* Make main content take remaining space, pushing footer down */
 }
 
 form label {
@@ -160,6 +165,8 @@ footer {
   margin-top: 4rem;
   font-size: 0.9rem;
   color: #999;
+  width: 100%; /* Ensure footer spans full width */
+  margin-top: auto; /* Push footer to bottom of flex container */
 }
 
 /* Google Sign-in */
