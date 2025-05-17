@@ -33,6 +33,7 @@ db.connect();
 
 (async () => {
   try {
+    // Create sessions table (unchanged)
     await db.query(`
       CREATE TABLE IF NOT EXISTS sessions (
         sid VARCHAR(255) NOT NULL PRIMARY KEY,
@@ -41,8 +42,54 @@ db.connect();
       )
     `);
     console.log('Sessions table created or already exists');
+
+    // Create users table (unchanged)
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(255) NOT NULL UNIQUE,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        password_hash TEXT NOT NULL
+      )
+    `);
+    console.log('Users table created or already exists');
+
+    // Create books table (unchanged)
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS books (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        author VARCHAR(255) NOT NULL,
+        rating INTEGER,
+        read_date TIMESTAMP NOT NULL,
+        notes TEXT,
+        cover_url TEXT,
+        user_id INTEGER REFERENCES users(id),
+        shared BOOLEAN DEFAULT FALSE
+      )
+    `);
+    console.log('Books table created or already exists');
+
+    // Create book_ratings table (rating changed to FLOAT)
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS book_ratings (
+        id SERIAL PRIMARY KEY,
+        book_id INTEGER REFERENCES books(id),
+        user_id INTEGER REFERENCES users(id),
+        rating FLOAT NOT NULL,  -- Changed from INTEGER to FLOAT
+        UNIQUE(book_id, user_id)
+      )
+    `);
+    console.log('Book_ratings table created or already exists');
+
+    // Alter book_ratings table to change rating to FLOAT if it exists with INTEGER
+    await db.query(`
+      ALTER TABLE book_ratings
+      ALTER COLUMN rating TYPE FLOAT
+    `);
+    console.log('Book_ratings table rating column updated to FLOAT');
   } catch (err) {
-    console.error('Error creating sessions table:', err);
+    console.error('Error creating or updating tables:', err);
   }
 })();
 
