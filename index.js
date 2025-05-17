@@ -31,6 +31,21 @@ const db = new pg.Client({
 });
 db.connect();
 
+(async () => {
+  try {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS sessions (
+        sid VARCHAR(255) NOT NULL PRIMARY KEY,
+        sess JSON NOT NULL,
+        expire TIMESTAMP(6) NOT NULL
+      )
+    `);
+    console.log('Sessions table created or already exists');
+  } catch (err) {
+    console.error('Error creating sessions table:', err);
+  }
+})();
+
 app.use(
   session({
     store: new PgSessionStore({
