@@ -2,27 +2,39 @@
 
 <form action="/signup" method="post">
     <label>Username:</label>
-    <input type="text" name="username" required>
-    <label>Email:</label>
-    <input type="text" name="email" required>
+    <input type="text" id="username" name="username" required>
+    <label for="email">Email:</label>
+  <input
+    type="email"
+    id="email"
+    name="email"
+    required
+    pattern="[a-zA-Z0-9._%+-]+@gmail\.com"
+    title="Please enter a valid Gmail address (e.g., example@gmail.com)"
+  >
     <label>Password:</label>
     <input type="password" name="password" required>
     <button type="submit" id="sign">Sign Up</button>
   </form>
-  <a href="/auth/google" class="google-signin"><i class="fab fa-google"></i> Sign Up With Google</a>
+  <a href="/auth/google" class="google-signin"> <i class="fab fa-google"></i> Sign Up With Google</a>
   <script>
-    const form = document.querySelector("form");
-  const addButton = document.getElementById("sign"); // Matching the button's ID
+  const form = document.querySelector("form");
+  const addButton = document.getElementById("sign");
   const loadingMessage = document.getElementById("loadingMessage");
-  
-    form.addEventListener("submit", function (event) {
-      // Disable the button to prevent multiple submissions
-      addButton.disabled = true;
-      addButton.textContent = "Signing Up.....";  // Optional: Change the button text
-      loadingMessage.style.display = "block"; // Show loading message
-  
-      
-    });
-  </script>
+
+  form.addEventListener("submit", function (event) {
+    const email = document.getElementById("email").value;
+    const regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/i;
+    if (!regex.test(email)) {
+      alert("Please enter a valid Gmail address.");
+      event.preventDefault();
+      return;
+    }
+    // Disable button and show loading state
+    addButton.disabled = true;
+    addButton.textContent = "Signing Up...";
+    loadingMessage.style.display = "block";
+  });
+</script>
   
   <%- include('partials/footer') %>

@@ -13,11 +13,11 @@
     <% books.forEach(item => { %>
       <li style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 20px;">
         <img src="<%= item.cover_url %>" alt="Cover for <%= item.title %>" style="max-width: 150px; height: auto;">
-        <h2><%= item.title %></h2>
+        <h2 class="itemt"><%= item.title %></h2>
         <p><strong>Author:</strong> <%= item.author %></p>
         <p><strong>Shared by:</strong> <%= item.username || 'Anonymous' %></p>
         <p><strong>Average Rating:</strong> <%= Number(item.average_rating) ? Number(item.average_rating).toFixed(1) + ' / 5' : 'No ratings yet' %></p>
-        <p><%= item.notes || 'No notes provided.' %></p>
+        <p><strong>Review:</strong><%= item.notes || 'No notes provided.' %></p>
 
         <!-- Rating Form (only for authenticated users who don't own the book) -->
         <% if (typeof user !== 'undefined' && user && user.id !== item.user_id) { %>

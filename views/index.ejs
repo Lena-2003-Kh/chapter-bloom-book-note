@@ -2,25 +2,24 @@
 
 <h2>All Books</h2>
 
+
 <!-- Sorting options -->
 <form method="GET" action="/">
   <label>Sort by:</label>
-  <select name="sort">
-    <option value="title" <%= sortBy === 'title' ? 'selected' : '' %>>Title</option>
-    <option value="rating" <%= sortBy === 'rating' ? 'selected' : '' %>>Rating</option>
-    <option value="date" <%= sortBy === 'date' ? 'selected' : '' %>>Recency</option>
+  <select name="sort" class="sort">
+    <option value="title"  <%= sortBy === 'title' ? 'selected' : '' %>>Title</option>
+    <option value="rating"  <%= sortBy === 'rating' ? 'selected' : '' %>>Rating</option>
+    <option value="date"  <%= sortBy === 'date' ? 'selected' : '' %>>Recency</option>
   </select>
   <button type="submit">Sort</button>
 </form>
-
+<a href="/add" class="addb">Add Your Book From Here</a>
 <!-- Loop through books and display each one -->
 <ul class="book-list">
   <% books.forEach(book => { %>
     <div class="book">
       <!-- Use fallback image if cover_url is not available -->
       <img src="<%= book.cover_url %>" alt="Book Cover">
-
-  
       <h3><%= book.title %></h3>
       <p>Author: <%= book.author %></p>
       <p>Rating: <%= book.rating %>/5</p>
@@ -35,5 +34,5 @@
   <% }) %>
 
 </ul>
-<a class="Log" href="/logout" role="button">Log Out</a>
+<a class="Log" href="/logout" role="button">Log Out</a> 
 <%- include('partials/footer') %>

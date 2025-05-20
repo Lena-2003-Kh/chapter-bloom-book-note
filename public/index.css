@@ -13,25 +13,32 @@ html {
 body {
   font-family: 'Poppins', sans-serif;
   background: linear-gradient(to bottom, #f7f2f8, #e9f0ff);
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* optional: keeps it fixed when scrolling */
+  background-size: cover; /* ensures it fills entire background */
   color: #2c2c2c;
   line-height: 1.6;
-  padding: 1rem;
-  min-height: 100%; /* Ensure body takes at least full viewport height */
-  display: flex; /* Use flexbox to structure the layout */
-  flex-direction: column; /* Stack header, main, footer vertically */
+  padding-bottom: 1rem; 
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* ensures body is at least as tall as the viewport */
 }
-
 /* Header */
 header {
   background: linear-gradient(to right, #6e44ff, #b892ff);
   color: #fff;
   padding: 1.5rem 2rem;
-  border-radius: 1rem;
   box-shadow: 0 0 10px rgba(110, 68, 255, 0.4);
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  width: 100vw; /* Full viewport width */
+  margin: 0; /* Ensure no horizontal margin */
+
 }
 
 header h1 a {
@@ -40,14 +47,22 @@ header h1 a {
   font-size: 2rem;
   font-weight: bold;
   letter-spacing: 1px;
+  
 }
 
+
+.itemt{
+  color: #6e44ff;
+}
+/* Ensure nav allows absolute positioning */
 nav {
+  position: relative; /* Make nav the positioning context */
   display: flex;
-  flex-wrap: wrap;
+  justify-content: flex-end; /* Align content to the right */
+  align-items: center;
+  padding: 1rem;
   gap: 1rem;
 }
-
 nav a {
   color: #fff;
   text-decoration: none;
@@ -55,10 +70,76 @@ nav a {
   padding: 0.4rem 1rem;
   border-radius: 0.5rem;
   transition: background 0.3s;
+
 }
 
 nav a:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+/* Desktop Links (Visible only on large screens) */
+.desktop-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.desktop-links a {
+  color: #6e44ff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.desktop-links a:hover {
+  background-color: #f3f0fa;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+}
+
+/* Mobile Hamburger Menu (Initially visible only on small screens) */
+/* Update the hamburger-menu class */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 25px;
+  height: 18px;
+  cursor: pointer;
+  position: absolute; /* Position it relative to the nav */
+  right: 1rem; /* Align to the far right */
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%); /* Adjust for vertical centering */
+}
+.hamburger-menu .line {
+  background-color: #fff;
+  height: 3px;
+  width: 100%;
+  border-radius: 3px;
+}
+
+/* Mobile Dropdown Menu (Initially hidden) */
+.mobile-dropdown-menu {
+  display: none;
+  background-color: #fff;
+  position: absolute;
+  top: 60px; /* Adjust as needed */
+  right: 0;
+  width: 200px;
+  border: 1px solid #d3c5ff;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  position: absolute; /* Added to position the hamburger menu absolutely */
+  right: 1rem; /* Moves the hamburger menu to the right side */
+}
+
+.mobile-dropdown-menu a {
+  padding: 1rem;
+  color: #6e44ff;
+  text-decoration: none;
+  display: block;
+  font-weight: 500;
+}
+
+.mobile-dropdown-menu a:hover {
+  background-color: #f3f0fa;
 }
 
 /* Main Form & Book Cards */
@@ -82,30 +163,49 @@ form input[type="text"],
 form input[type="date"],
 form input[type="number"],
 form select,
-form textarea {
+form textarea{
+ width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 0.6rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  background-color: white;
+}
+form input[type="email"],
+form input[type="password"]{
   width: 100%;
   padding: 0.8rem;
   border: 1px solid #ccc;
   border-radius: 0.6rem;
   margin-top: 0.5rem;
   font-size: 1rem;
+  background-color: white;
 }
-
+#username{
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 0.6rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  background-color: white;
+}
 textarea {
   resize: vertical;
 }
 
-button,
-input[type="submit"] {
+button,input[type="submit"] {
   background: #6e44ff;
   color: #fff;
   border: none;
-  padding: 0.8rem 1.6rem;
-  margin-top: 1.2rem;
+  padding: 0.8rem 3rem;
+  margin: 1.2rem auto 0; /* auto left and right centers it */
   border-radius: 0.6rem;
   cursor: pointer;
   font-size: 1rem;
   transition: background 0.3s ease;
+  display: block; /* required for margin: auto to work */
 }
 
 button:hover,
@@ -172,17 +272,68 @@ footer {
 /* Google Sign-in */
 .google-signin {
   display: inline-block;
-  margin-top: 1rem;
-  color: #fff;
-  background-color: #db4437;
-  padding: 0.6rem 1.2rem;
+  /*margin-top: 1rem;*/
+  margin: 1.2rem auto 0; /* auto left and right centers it */
+  text-align: center;
+  color: #6e44ff;
+  background-color: #ede9f9;
+  padding: 0.6rem 1.5rem;
+  padding-left: 1rem;
   border-radius: 0.5rem;
   text-decoration: none;
-  font-weight: 500;
+  display: block; /* required for margin: auto to work */
 }
 
 .google-signin:hover {
-  background-color: #c23321;
+  background-color: #d9d3f2;
+}
+.Log{
+  display: inline-block;
+  margin: 1.2rem auto 0; /* auto left and right centers it */
+  text-align: center;
+  background-color: #b76fa7;
+  color: #ffffff;
+  padding: 0.6rem 3rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  
+}
+.Log:hover{
+ background-color: #a85f97;
+}
+.addb{
+  display: inline-block;
+  margin: 1.2rem auto 0; /* auto left and right centers it */
+  text-align: center;
+  background-color: #a98fdc;
+  color: #ffffff;
+  padding: 0.6rem 3rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+}
+.addb:hover{
+  background-color:#987ed1 ;
+}
+.sort {
+  text-align: center; 
+}
+a.cancel {
+  background: #d1d5db;
+  color: #2c2c2c;
+  text-decoration: none;
+  text-align: center;
+  border: none;
+  padding: 0.8rem 3rem;
+  margin: 1.2rem auto 0;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+  display: block;
+  text-align: center;
+}
+a.cancel:hover {
+  background: #b9bfc9;
 }
 
 /* Responsive Enhancements */
@@ -203,4 +354,49 @@ footer {
   form {
     padding: 1rem;
   }
+  main{
+    max-width: 400px;
+  }
+  
+}
+/* Media Query for Small Screens */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: row; /* Keep logo and hamburger menu on same row */
+    justify-content: space-between; /* Ensure logo left, hamburger right */
+    align-items: center;
+  }
+  nav {
+    justify-content: flex-end; /* Align everything to the right */
+  }
+  .desktop-links {
+    display: none; /* Hide desktop links on small screens */
+  }
+
+  .hamburger-menu {
+    display: flex; /* Show hamburger menu on small screens */
+  }
+
+  .mobile-dropdown-menu.show {
+    display: block; /* Show the mobile menu when toggled */
+  }
+  .sign, .log, .shared ,.logout,.home,.add{
+    display: none; /* Hide Sign Up and Login links on small screens */
+  }
+  form input[type="text"],
+form input[type="date"],
+form input[type="number"],
+form select,
+form textarea{
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 0.6rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  background-color: white;
+}
+main{
+  max-width: 400px;
+}
 }

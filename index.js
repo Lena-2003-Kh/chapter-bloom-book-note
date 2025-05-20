@@ -16,82 +16,16 @@ const port = 3000;
 const saltRounds = 12;
 env.config();
 
-/*const db = new pg.Client({
+const db = new pg.Client({
   user: process.env.PG_USER,
   host: process.env.PG_HOST,
   database: process.env.PG_DATABASE,
   password: process.env.PG_PASSWORD,
   port: process.env.PG_PORT,
-});*/
-const db = new pg.Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes("render.com")
-      ? { rejectUnauthorized: false }
-      : false  // Disable SSL if not required (this is for hosting on platforms like Render)
 });
+
 db.connect();
 
-(async () => {
-  try {
-    // Create sessions table (unchanged)
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS sessions (
-        sid VARCHAR(255) NOT NULL PRIMARY KEY,
-        sess JSON NOT NULL,
-        expire TIMESTAMP(6) NOT NULL
-      )
-    `);
-    console.log('Sessions table created or already exists');
-
-    // Create users table (unchanged)
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        username VARCHAR(255) NOT NULL UNIQUE,
-        email VARCHAR(255) NOT NULL UNIQUE,
-        password_hash TEXT NOT NULL
-      )
-    `);
-    console.log('Users table created or already exists');
-
-    // Create books table (unchanged)
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS books (
-        id SERIAL PRIMARY KEY,
-        title VARCHAR(255) NOT NULL,
-        author VARCHAR(255) NOT NULL,
-        rating INTEGER,
-        read_date TIMESTAMP NOT NULL,
-        notes TEXT,
-        cover_url TEXT,
-        user_id INTEGER REFERENCES users(id),
-        shared BOOLEAN DEFAULT FALSE
-      )
-    `);
-    console.log('Books table created or already exists');
-
-    // Create book_ratings table (rating changed to FLOAT)
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS book_ratings (
-        id SERIAL PRIMARY KEY,
-        book_id INTEGER REFERENCES books(id),
-        user_id INTEGER REFERENCES users(id),
-        rating FLOAT NOT NULL,  -- Changed from INTEGER to FLOAT
-        UNIQUE(book_id, user_id)
-      )
-    `);
-    console.log('Book_ratings table created or already exists');
-
-    // Alter book_ratings table to change rating to FLOAT if it exists with INTEGER
-    await db.query(`
-      ALTER TABLE book_ratings
-      ALTER COLUMN rating TYPE FLOAT
-    `);
-    console.log('Book_ratings table rating column updated to FLOAT');
-  } catch (err) {
-    console.error('Error creating or updating tables:', err);
-  }
-})();
 
 app.use(
   session({
@@ -141,7 +75,7 @@ app.get("/", async (req, res) => {
       });
       book.read_date = localDate;
     });
-    res.render("index", { books: result.rows, sortBy });
+    res.render("index", { books: result.rows, sortBy, user: req.user });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error retrieving books");
@@ -186,6 +120,7 @@ app.get("/add", (req, res) => {
       cover_id: "",
       cover_id_type: "isbn",
       notes: "",
+      user: req.user || null // Add user variable
     });
   } else {
     res.redirect("/login");
@@ -222,9 +157,13 @@ app.get("/edit/:id", async (req, res) => {
       if (book.user_id !== req.user.id) {
         return res.status(403).send("You don't have permission to edit this book");
       }
-      res.render("edit", { book });
+      // Format read_date for HTML date input
+      book.read_date = book.read_date ? new Date(book.read_date).toISOString().split("T")[0] : "";
+      console.log("Book data:", book); // Log to verify data
+      console.log("User:", req.user); // Log to verify authentication
+      res.render("edit", { book, user: req.user || null });
     } catch (err) {
-      console.error(err);
+      console.error("Error loading book for editing:", err);
       res.status(500).send("Error loading book for editing");
     }
   } else {
@@ -232,30 +171,38 @@ app.get("/edit/:id", async (req, res) => {
   }
 });
 
+
 app.post("/edit/:id", async (req, res) => {
   const bookId = req.params.id;
   if (req.isAuthenticated()) {
     try {
-      const { title, author, read_date, rating, cover_url, notes } = req.body;
-      const date = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Amman" }));
+      const { title, author, read_date, rating, cover_url, notes, shared } = req.body;
+      const date = read_date ? new Date(read_date) : new Date();
+      if (read_date && isNaN(date)) {
+        return res.status(400).send("Invalid date format");
+      }
       const result = await db.query("SELECT * FROM books WHERE id=$1", [bookId]);
       if (result.rows.length === 0) {
         return res.status(404).send("Book not found");
       }
       const book = result.rows[0];
+      if (book.user_id !== req.user.id) {
+        return res.status(403).send("You don't have permission to edit this book");
+      }
       await db.query(
-        "UPDATE books SET title = $1, author = $2, read_date = $3, rating = $4, cover_url = $5, notes = $6 WHERE id = $7",
-        [title, author, date, rating, cover_url, notes, bookId]
+        "UPDATE books SET title = $1, author = $2, read_date = $3, rating = $4, cover_url = $5, notes = $6, shared = $7 WHERE id = $8",
+        [title, author, date, rating || null, cover_url || null, notes || null, shared === "on", bookId]
       );
       res.redirect("/");
     } catch (err) {
-      console.error(err);
+      console.error("Error updating book:", err);
       res.status(500).send("Error updating book");
     }
   } else {
     res.redirect("/login");
   }
 });
+
 
 app.get("/delete/:id", async (req, res) => {
   if (req.isAuthenticated()) {
@@ -266,7 +213,7 @@ app.get("/delete/:id", async (req, res) => {
       if (book.user_id !== req.user.id) {
         return res.status(403).send("You don't have permission to delete this book");
       }
-      res.render("delete", { book });
+      res.render("delete", { book, user: req.user || null });
     } catch (err) {
       console.log(err);
       res.status(500).send("Error fetching post for deletion");
@@ -300,13 +247,12 @@ app.post("/delete/:id", async (req, res) => {
 });
 
 app.get("/signup", async (req, res) => {
-  res.render("signup");
+  res.render("signup",{ user: req.user || null });
 });
 
 app.get("/login", async (req, res) => {
-  res.render("login");
+  res.render("login", { user: req.user || null, error: null });
 });
-
 app.get(
   "/auth/google",
   passport.authenticate("google", {
@@ -318,40 +264,82 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
     successRedirect: "/",
-    failureRedirect: "/login",
-  })
+    failureRedirect: "/signup",
+    failureMessage: true,
+  }),
+  (req, res) => {
+    if (req.session.messages) {
+      res.render("signup", {
+        user: req.user || null,
+        error: req.session.messages[0] || "Google sign-up failed.",
+      });
+    }
+  }
 );
 
 app.post("/signup", async (req, res) => {
   const { username, email, password } = req.body;
+
+  // Validate email format
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/i;
+  if (!emailRegex.test(email)) {
+    return res.render("signup", {
+      user: req.user || null,
+      error: "Please provide a valid Gmail address (e.g., example@gmail.com).",
+    });
+  }
+
   try {
+    // Check for existing username
     const checkResult = await db.query("SELECT * FROM users WHERE username = $1", [username]);
     if (checkResult.rows.length > 0) {
-      res.send("This username already exists. Try logging in.");
-    } else {
-      bcrypt.hash(password, saltRounds, async (err, hash) => {
-        if (err) {
-          console.error("Error hashing password:", err);
-          return res.status(500).send("Error processing signup.");
-        }
-        await db.query(
-          "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)",
-          [username, email, hash]
-        );
-        const newUserResult = await db.query("SELECT * FROM users WHERE username = $1", [username]);
-        const user = newUserResult.rows[0];
-        req.login(user, (err) => {
-          if (err) {
-            console.error("Login error:", err);
-            return res.status(500).send("Login failed.");
-          }
-          return res.redirect("/");
-        });
+      return res.render("signup", {
+        user: req.user || null,
+        error: "This username already exists. Try logging in.",
       });
     }
+
+    // Check for existing email
+    const emailCheck = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+    if (emailCheck.rows.length > 0) {
+      return res.render("signup", {
+        user: req.user || null,
+        error: "This email is already registered.",
+      });
+    }
+
+    // Hash password and create user
+    bcrypt.hash(password, saltRounds, async (err, hash) => {
+      if (err) {
+        console.error("Error hashing password:", err);
+        return res.render("signup", {
+          user: req.user || null,
+          error: "Error processing signup.",
+        });
+      }
+      await db.query(
+        "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)",
+        [username, email, hash]
+      );
+      const newUserResult = await db.query("SELECT * FROM users WHERE username = $1", [username]);
+      const user = newUserResult.rows[0];
+      req.login(user, (err) => {
+        if (err) {
+          console.error("Login error:", err);
+          return res.render("signup", {
+            user: req.user || null,
+            error: "Login failed.",
+          });
+        }
+        return res.redirect("/");
+      });
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.render("signup", {
+      user: req.user || null,
+      error: "Internal Server Error",
+    });
   }
 });
 
@@ -431,9 +419,20 @@ app.post(
   passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/login",
-  })
+    failureMessage: true,
+  }),
+   
 );
-
+// A middleware to handle login errors
+app.use((err, req, res, next) => {
+  if (req.originalUrl === "/login" && req.method === "POST") {
+    return res.render("login", {
+      user: req.user || null,
+      error: "Invalid username or password.",
+    });
+  }
+  next(err);
+});
 async function fetchBookCover(cover_id_type, cover_id, retries = 3) {
   const size = 'M';
   let url;
@@ -511,13 +510,17 @@ passport.use(
     },
     async (request, accessToken, refreshToken, profile, done) => {
       try {
-        const result = await db.query("SELECT * FROM users WHERE email = $1", [profile.email]);
+        const email = profile.email;
+        if (!email.match(/^[a-zA-Z0-9._%+-]+@gmail\.com$/i)) {
+          return done(null, false, { message: "Only Gmail addresses are allowed." });
+        }
+        const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
         if (result.rows.length > 0) {
           return done(null, result.rows[0]);
         } else {
           const newUser = await db.query(
             "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *",
-            [profile.displayName, profile.email, profile.id]
+            [profile.displayName, email, profile.id]
           );
           return done(null, newUser.rows[0]);
         }

@@ -10,14 +10,46 @@
 </head>
 <body>
   <header>
-    <h1><a href="/">📚 ChapterBloom</a></h1>
-    <nav>
-      <!-- Simple navigation bar -->
-      <a href="/">Home</a>
-      <a href="/add">Add New Book</a>
-      <a href="/shared">View Shared Books</a>
+  <h1><a href="/">📚 ChapterBloom</a></h1>
+  <nav>
+    <% if (!user) { %>
+        <div class=".desktop-links">
+      <a href="/shared" class="shared">View Other People Books</a>
       <a href="/signup" class="sign">Sign Up</a>
       <a href="/login" class="log">Login</a>
-    </nav>
-  </header>
+    <% } else { %>
+      <a href="/" class="home">Home</a>
+      <a href="/add" class="add">Add Your Book</a>
+      <a href="/shared" class="shared">View Shared Books</a>
+      <a href="/logout" class="logout">Logout</a>
+    <% } %>
+  </div>
+    <!-- Mobile Hamburger Menu (Visible only on small screens) -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+    </div>
+
+    <!-- Mobile Dropdown Menu (Initially hidden) -->
+    <div class="mobile-dropdown-menu">
+      <% if (!user) { %>
+        <a href="/shared" class="">View Other People Books</a>
+        <a href="/signup" class="sign">Sign Up</a>
+        <a href="/login" class="log">Login</a>
+      <% } else { %>
+        <a href="/">Home</a>
+        <a href="/add">Add Your Book</a>
+        <a href="/shared" >View Shared Books</a>
+        <a href="/logout" class="logout">Logout</a>
+      <% } %>
+    </div>
+  </nav>
+</header>
+<script>
+function toggleMenu() {
+  const menu = document.querySelector('.mobile-dropdown-menu');
+  menu.classList.toggle('show');
+}
+</script>
   <main>
