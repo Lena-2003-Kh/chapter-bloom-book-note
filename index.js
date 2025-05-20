@@ -16,14 +16,19 @@ const port = 3000;
 const saltRounds = 12;
 env.config();
 
-const db = new pg.Client({
+/*const db = new pg.Client({
   user: process.env.PG_USER,
   host: process.env.PG_HOST,
   database: process.env.PG_DATABASE,
   password: process.env.PG_PASSWORD,
   port: process.env.PG_PORT,
+});*/
+const db = new pg.Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes("render.com")
+      ? { rejectUnauthorized: false }
+      : false  // Disable SSL if not required (this is for hosting on platforms like Render)
 });
-
 db.connect();
 
 
