@@ -9,7 +9,7 @@ import session from "express-session";
 import env from "dotenv";
 import pgSession from "connect-pg-simple";
 import GoogleStrategy from "passport-google-oauth2";
-
+import path from 'path';
 const PgSessionStore = pgSession(session);
 const app = express();
 const port = 3000;
@@ -47,7 +47,7 @@ app.use(
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
 app.use(passport.initialize());
 app.use(passport.session());
 
