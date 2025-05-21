@@ -48,7 +48,8 @@ app.use(
 );
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
+// Serve static files from "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
 // These lines create __dirname
