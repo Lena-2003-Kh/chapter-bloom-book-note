@@ -33,12 +33,11 @@ header {
   padding: 1.5rem 2rem;
   box-shadow: 0 0 10px rgba(110, 68, 255, 0.4);
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  width: 100vw; /* Full viewport width */
-  margin: 0; /* Ensure no horizontal margin */
-
+  width: 100vw;
+  margin: 0;
+  flex-wrap: nowrap; /* Prevent wrapping */
 }
 
 header h1 a {
@@ -115,19 +114,17 @@ nav a:hover {
   border-radius: 3px;
 }
 
-/* Mobile Dropdown Menu (Initially hidden) */
 .mobile-dropdown-menu {
   display: none;
   background-color: #fff;
   position: absolute;
-  top: 60px; /* Adjust as needed */
-  right: 0;
+  top: 100%; /* Position below the nav */
+  right: 1rem; /* Align with hamburger menu */
   width: 200px;
   border: 1px solid #d3c5ff;
   border-radius: 0.5rem;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  position: absolute; /* Added to position the hamburger menu absolutely */
-  right: 1rem; /* Moves the hamburger menu to the right side */
+  z-index: 1000; /* Ensure it appears above other elements */
 }
 
 .mobile-dropdown-menu a {
@@ -385,26 +382,4 @@ form textarea{
 main{
   max-width: 400px;
 }
-}
-@media(min-width : 319px ) and (max-width : 480px ){
-  header {
-    flex-direction: row; /* Keep items in a row */
-    justify-content: space-between; /* Still space between logo and menu */
-    align-items: center;
-  }
-
-  nav {
-    justify-content: flex-end; /* Keep nav on the right */
-  }
-
-  .book-list {
-    grid-template-columns: 1fr;
-  }
-
-  form {
-    padding: 1rem;
-  }
-  main{
-    max-width: 400px;
-  }
 }
