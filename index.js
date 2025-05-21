@@ -25,7 +25,7 @@ env.config();
 });*/
 const db = new pg.Client({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes("render.com")
+  ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes("vercel.com")
       ? { rejectUnauthorized: false }
       : false  // Disable SSL if not required (this is for hosting on platforms like Render)
 });
