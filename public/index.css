@@ -208,6 +208,7 @@ button,input[type="submit"] {
   display: block; /* required for margin: auto to work */
 }
 
+
 button:hover,
 input[type="submit"]:hover {
   background: #a47eff;
@@ -317,34 +318,16 @@ footer {
 .sort {
   text-align: center; 
 }
-a.cancel {
-  background: #d1d5db;
-  color: #2c2c2c;
-  text-decoration: none;
-  text-align: center;
-  border: none;
-  padding: 0.8rem 3rem;
-  margin: 1.2rem auto 0;
-  border-radius: 0.6rem;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.3s ease;
-  display: block;
-  text-align: center;
-}
-a.cancel:hover {
-  background: #b9bfc9;
-}
-
 /* Responsive Enhancements */
 @media (max-width: 600px) {
   header {
-    flex-direction: column;
-    text-align: center;
+    flex-direction: row; /* Keep items in a row */
+    justify-content: space-between; /* Still space between logo and menu */
+    align-items: center;
   }
 
   nav {
-    justify-content: center;
+    justify-content: flex-end; /* Keep nav on the right */
   }
 
   .book-list {
@@ -365,9 +348,11 @@ a.cancel:hover {
     flex-direction: row; /* Keep logo and hamburger menu on same row */
     justify-content: space-between; /* Ensure logo left, hamburger right */
     align-items: center;
+    flex-wrap: wrap;  /* Allow the items to wrap onto the next line */
   }
   nav {
     justify-content: flex-end; /* Align everything to the right */
+    padding-right: 2rem; /* Adjust padding for better alignment */
   }
   .desktop-links {
     display: none; /* Hide desktop links on small screens */
@@ -375,6 +360,7 @@ a.cancel:hover {
 
   .hamburger-menu {
     display: flex; /* Show hamburger menu on small screens */
+    right: 1.5rem; /* Adjust for better placement of the hamburger icon */
   }
 
   .mobile-dropdown-menu.show {
@@ -399,4 +385,26 @@ form textarea{
 main{
   max-width: 400px;
 }
+}
+@media(min-width : 319px ) and (max-width : 480px ){
+  header {
+    flex-direction: row; /* Keep items in a row */
+    justify-content: space-between; /* Still space between logo and menu */
+    align-items: center;
+  }
+
+  nav {
+    justify-content: flex-end; /* Keep nav on the right */
+  }
+
+  .book-list {
+    grid-template-columns: 1fr;
+  }
+
+  form {
+    padding: 1rem;
+  }
+  main{
+    max-width: 400px;
+  }
 }
