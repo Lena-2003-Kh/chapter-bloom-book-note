@@ -316,15 +316,15 @@ footer {
   text-align: center; 
 }
 /* Responsive Enhancements */
-@media (max-width: 600px) {
+/*@media (max-width: 600px) {
   header {
-    flex-direction: row; /* Keep items in a row */
-    justify-content: space-between; /* Still space between logo and menu */
+    flex-direction: row; 
+    justify-content: space-between; 
     align-items: center;
   }
 
   nav {
-    justify-content: flex-end; /* Keep nav on the right */
+    justify-content: flex-end; 
   }
 
   .book-list {
@@ -338,7 +338,7 @@ footer {
     max-width: 400px;
   }
   
-}
+}*/
 /* Media Query for Small Screens */
 @media screen and (max-width: 768px) {
   header {
