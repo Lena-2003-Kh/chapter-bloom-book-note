@@ -12,7 +12,8 @@
     "passport-google-oauth2": "^0.2.0",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
-    "pg": "^8.15.6"
+    "pg": "^8.15.6",
+    "url": "^0.11.4"
   },
   "name": "book",
   "version": "1.0.0",

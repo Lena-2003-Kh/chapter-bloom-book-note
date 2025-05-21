@@ -10,6 +10,8 @@ import env from "dotenv";
 import pgSession from "connect-pg-simple";
 import GoogleStrategy from "passport-google-oauth2";
 import path from 'path';
+import { fileURLToPath } from 'url';
+
 const PgSessionStore = pgSession(session);
 const app = express();
 const port = 3000;
@@ -47,9 +49,15 @@ app.use(
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-app.set('views', path.join(__dirname, 'views'));
 app.use(passport.initialize());
 app.use(passport.session());
+// These lines create __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// View engine setup
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.get("/", async (req, res) => {
   if (!req.isAuthenticated()) {
