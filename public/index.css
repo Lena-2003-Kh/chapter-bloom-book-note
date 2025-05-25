@@ -329,12 +329,13 @@ footer {
     display: inline-block;
     float: left;
     font-size: 24px;
-    padding-left: 0;
+    margin-left: auto;
+    
   }
   nav {
     justify-content: flex-end; /* Align everything to the right */
-   /* padding-right: 2rem;*/ /* Adjust padding for better alignment */
-   padding-right:0 ;
+   padding-right: 2rem; /* Adjust padding for better alignment */
+   margin-right: auto;
   }
   .desktop-links {
     display: none; /* Hide desktop links on small screens */
@@ -343,9 +344,7 @@ footer {
   .hamburger-menu {
     display: flex; /* Show hamburger menu on small screens */
     float: right;
-   
-    
-  }
+   }
 
   .mobile-dropdown-menu.show {
     display: block; /* Show the mobile menu when toggled */
