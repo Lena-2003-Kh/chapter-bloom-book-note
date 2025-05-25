@@ -56,23 +56,19 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.get("/", async (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.redirect("/login");
-  }
-  const sortBy = req.query.sort || "title";
-  let sortQuery = "ORDER BY title ASC";
-  if (sortBy === "rating") {
-    sortQuery = "ORDER BY rating DESC";
-  } else if (sortBy === "date") {
-    sortQuery = "ORDER BY read_date DESC";
-  }
   try {
-    const result = await db.query(
-      `SELECT * FROM books WHERE user_id = $1 ${sortQuery}`,
-      [req.user.id]
-    );
+    const result = await db.query(`
+      SELECT books.*, users.username,
+        COALESCE(AVG(book_ratings.rating), 0) AS average_rating
+      FROM books
+      LEFT JOIN users ON books.user_id = users.id
+      LEFT JOIN book_ratings ON books.id = book_ratings.book_id
+      WHERE shared = TRUE
+      GROUP BY books.id, users.username
+      ORDER BY read_date DESC
+    `);
     result.rows.forEach((book) => {
-      const localDate = new Date(book.read_date).toLocaleDateString("en-US", {
+      book.formatted_read_date = new Date(book.read_date).toLocaleString("en-US", {
         timeZone: "Asia/Amman",
         year: "numeric",
         month: "2-digit",
@@ -82,12 +78,11 @@ app.get("/", async (req, res) => {
         second: "2-digit",
         hour12: true,
       });
-      book.read_date = localDate;
     });
-    res.render("shared", { books: result.rows, sortBy, user: req.user });
+    res.render("shared", { books: result.rows, user: req.user || null });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error retrieving books");
+    res.status(500).send("Error retrieving shared books");
   }
 });
 app.get("/home", async (req, res) => {
