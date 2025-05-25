@@ -340,7 +340,7 @@ footer {
 
   .hamburger-menu {
     display: flex; /* Show hamburger menu on small screens */
-    right: 1.5rem; /* Adjust for better placement of the hamburger icon */
+   /* right: 1.5rem; *//* Adjust for better placement of the hamburger icon */
     float: right;
     
   }
