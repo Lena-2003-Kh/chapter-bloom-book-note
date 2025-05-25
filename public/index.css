@@ -329,6 +329,7 @@ footer {
     display: inline-block;
     float: left;
     font-size: 24px;
+    padding-left: auto;
   }
   nav {
     justify-content: flex-end; /* Align everything to the right */
