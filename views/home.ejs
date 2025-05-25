@@ -23,7 +23,7 @@
       <h3><%= book.title %></h3>
       <p>Author: <%= book.author %></p>
       <p>Rating: <%= book.rating %>/5</p>
-      <p>Read Date: <%= book.read_date_iso %></p>
+      <p class="date">Read Date: <%= book.read_date_iso %></p>
       <p class="note">Notes:<%= book.notes %></p> 
       
       <a href="/edit/<%= book.id %>" class="edit">Edit</a>
@@ -35,4 +35,19 @@
 
 </ul>
 <a class="Log" href="/logout" role="button">Log Out</a> 
+<script>
+  document.querySelectorAll('.date').forEach((element) => {
+    const isoDate = element.getAttribute('data-iso');
+    const date = new Date(isoDate);
+    element.textContent = date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    }); // Uses the browser's local timezone
+  });
+</script>
 <%- include('partials/footer') %>
