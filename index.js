@@ -472,7 +472,7 @@ app.post("/login", (req, res, next) => {
     // Manually log the user in
     req.logIn(user, (err) => {
       if (err) return next(err);
-      return res.redirect("/");
+      return res.redirect("/home");
     });
   })(req, res, next);
 });
