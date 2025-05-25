@@ -345,7 +345,13 @@ footer {
     flex-direction: row; /* Keep logo and hamburger menu on same row */
     justify-content: space-between; /* Ensure logo left, hamburger right */
     align-items: center;
-    flex-wrap: wrap;  /* Allow the items to wrap onto the next line */
+    flex-wrap: nowrap;  /* Allow the items to wrap onto the next line */
+    display: inline-block;
+  }
+  header >h1{
+    display: inline-block;
+    float: left;
+    font-size: 16px;
   }
   nav {
     justify-content: flex-end; /* Align everything to the right */
@@ -359,7 +365,7 @@ footer {
     display: flex; /* Show hamburger menu on small screens */
     right: 1.5rem; /* Adjust for better placement of the hamburger icon */
     float: right;
-    width: 10%;
+    
   }
 
   .mobile-dropdown-menu.show {
