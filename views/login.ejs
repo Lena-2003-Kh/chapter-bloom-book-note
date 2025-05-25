@@ -1,6 +1,10 @@
 <%- include('partials/header') %>
 
 <form action="/login" method="post">
+  <% if (error) { %>
+    <p style="color: red;"><%= error %></p>
+  <% } %>
+  
     <label>Username:</label>
     <input type="text" name="username" required>
     <label>Password:</label>

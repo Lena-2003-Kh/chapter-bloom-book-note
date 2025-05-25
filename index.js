@@ -11,20 +11,14 @@ import pgSession from "connect-pg-simple";
 import GoogleStrategy from "passport-google-oauth2";
 import path from 'path';
 import { fileURLToPath } from 'url';
-
+import flash from "connect-flash";
 const PgSessionStore = pgSession(session);
 const app = express();
 const port = 3000;
 const saltRounds = 12;
 env.config();
 
-/*const db = new pg.Client({
-  user: process.env.PG_USER,
-  host: process.env.PG_HOST,
-  database: process.env.PG_DATABASE,
-  password: process.env.PG_PASSWORD,
-  port: process.env.PG_PORT,
-});*/
+
 const db = new pg.Client({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes("vercel.com")
@@ -55,7 +49,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
 // These lines create __dirname
-
+app.use(flash());
 
 // View engine setup
 app.set('view engine', 'ejs');
@@ -265,9 +259,13 @@ app.get("/signup", async (req, res) => {
   res.render("signup",{ user: req.user || null });
 });
 
-app.get("/login", async (req, res) => {
-  res.render("login", { user: req.user || null, error: null });
+app.get("/login", (req, res) => {
+  res.render("login", {
+    user: null,
+    error: null,
+  });
 });
+
 app.get(
   "/auth/google",
   passport.authenticate("google", {
@@ -429,25 +427,26 @@ app.get("/logout", (req, res) => {
   });
 });
 
-app.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-    failureMessage: true,
-  }),
-   
-);
-// A middleware to handle login errors
-app.use((err, req, res, next) => {
-  if (req.originalUrl === "/login" && req.method === "POST") {
-    return res.render("login", {
-      user: req.user || null,
-      error: "Invalid username or password.",
+app.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) return next(err);
+
+    if (!user) {
+      // Authentication failed
+      return res.render("login", {
+        user: null,
+        error: "Invalid username or password.", // Or use info.message if set
+      });
+    }
+
+    // Manually log the user in
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      return res.redirect("/");
     });
-  }
-  next(err);
+  })(req, res, next);
 });
+
 async function fetchBookCover(cover_id_type, cover_id, retries = 3) {
   const size = 'M';
   let url;

@@ -315,30 +315,7 @@ footer {
 .sort {
   text-align: center; 
 }
-/* Responsive Enhancements */
-/*@media (max-width: 600px) {
-  header {
-    flex-direction: row; 
-    justify-content: space-between; 
-    align-items: center;
-  }
 
-  nav {
-    justify-content: flex-end; 
-  }
-
-  .book-list {
-    grid-template-columns: 1fr;
-  }
-
-  form {
-    padding: 1rem;
-  }
-  main{
-    max-width: 400px;
-  }
-  
-}*/
 /* Media Query for Small Screens */
 @media screen and (max-width: 768px) {
   header {
@@ -351,7 +328,7 @@ footer {
   header h1 a {
     display: inline-block;
     float: left;
-    font-size: 16px;
+    
   }
   nav {
     justify-content: flex-end; /* Align everything to the right */
