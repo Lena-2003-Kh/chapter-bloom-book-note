@@ -84,7 +84,42 @@ app.get("/", async (req, res) => {
       });
       book.read_date = localDate;
     });
-    res.render("index", { books: result.rows, sortBy, user: req.user });
+    res.render("shared", { books: result.rows, sortBy, user: req.user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error retrieving books");
+  }
+});
+app.get("/home", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect("/login");
+  }
+  const sortBy = req.query.sort || "title";
+  let sortQuery = "ORDER BY title ASC";
+  if (sortBy === "rating") {
+    sortQuery = "ORDER BY rating DESC";
+  } else if (sortBy === "date") {
+    sortQuery = "ORDER BY read_date DESC";
+  }
+  try {
+    const result = await db.query(
+      `SELECT * FROM books WHERE user_id = $1 ${sortQuery}`,
+      [req.user.id]
+    );
+    result.rows.forEach((book) => {
+      const localDate = new Date(book.read_date).toLocaleDateString("en-US", {
+        timeZone: "Asia/Amman",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      });
+      book.read_date = localDate;
+    });
+    res.render("home", { books: result.rows, sortBy, user: req.user });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error retrieving books");
@@ -147,7 +182,7 @@ app.post("/add", async (req, res) => {
       "INSERT INTO books (title, author, rating, read_date, notes, cover_url, user_id, shared) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
       [title, author, rating, date, notes, coverImageUrl, user_id, shared]
     );
-    res.redirect("/");
+    res.redirect("/home");
   } catch (err) {
     console.error(err);
     res.status(500).send("Error adding book");
@@ -202,7 +237,7 @@ app.post("/edit/:id", async (req, res) => {
         "UPDATE books SET title = $1, author = $2, read_date = $3, rating = $4, cover_url = $5, notes = $6, shared = $7 WHERE id = $8",
         [title, author, date, rating || null, cover_url || null, notes || null, shared === "on", bookId]
       );
-      res.redirect("/");
+      res.redirect("/home");
     } catch (err) {
       console.error("Error updating book:", err);
       res.status(500).send("Error updating book");
@@ -245,7 +280,7 @@ app.post("/delete/:id", async (req, res) => {
         return res.status(403).send("You don't have permission to delete this book");
       }
       await db.query("DELETE FROM books WHERE id = $1", [bookId]);
-      res.redirect("/");
+      res.redirect("/home");
     } catch (err) {
       console.error(err);
       res.status(500).send("Error deleting book");
@@ -344,7 +379,7 @@ app.post("/signup", async (req, res) => {
             error: "Login failed.",
           });
         }
-        return res.redirect("/");
+        return res.redirect("/home");
       });
     });
   } catch (err) {

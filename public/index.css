@@ -329,13 +329,12 @@ footer {
     display: inline-block;
     float: left;
     font-size: 24px;
-    margin-left: auto;
     
   }
   nav {
     justify-content: flex-end; /* Align everything to the right */
-   padding-right: 2rem; /* Adjust padding for better alignment */
-   margin-right: auto;
+  /* padding-right: 2rem; *//* Adjust padding for better alignment */
+   
   }
   .desktop-links {
     display: none; /* Hide desktop links on small screens */
