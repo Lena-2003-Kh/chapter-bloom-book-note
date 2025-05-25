@@ -332,7 +332,7 @@ footer {
   }
   nav {
     justify-content: flex-end; /* Align everything to the right */
-    padding-right: 2rem; /* Adjust padding for better alignment */
+   /* padding-right: 2rem;*/ /* Adjust padding for better alignment */
   }
   .desktop-links {
     display: none; /* Hide desktop links on small screens */
@@ -340,7 +340,6 @@ footer {
 
   .hamburger-menu {
     display: flex; /* Show hamburger menu on small screens */
-   /* right: 1.5rem; *//* Adjust for better placement of the hamburger icon */
     float: right;
     
   }
