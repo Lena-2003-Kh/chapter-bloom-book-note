@@ -67,7 +67,7 @@ app.get("/", async (req, res) => {
       GROUP BY books.id, users.username
       ORDER BY read_date DESC
     `);
-    result.rows.forEach((book) => {
+    /*result.rows.forEach((book) => {
       book.formatted_read_date = new Date(book.read_date).toLocaleString("en-US", {
         timeZone: "Asia/Amman",
         year: "numeric",
@@ -78,6 +78,10 @@ app.get("/", async (req, res) => {
         second: "2-digit",
         hour12: true,
       });
+    });*/
+    // Pass raw read_date as ISO string
+    result.rows.forEach((book) => {
+      book.read_date_iso = new Date(book.read_date).toISOString();
     });
     res.render("shared", { books: result.rows, user: req.user || null });
   } catch (err) {
@@ -101,7 +105,7 @@ app.get("/home", async (req, res) => {
       `SELECT * FROM books WHERE user_id = $1 ${sortQuery}`,
       [req.user.id]
     );
-    result.rows.forEach((book) => {
+    /*result.rows.forEach((book) => {
       const localDate = new Date(book.read_date).toLocaleDateString("en-US", {
         timeZone: "Asia/Amman",
         year: "numeric",
@@ -113,6 +117,10 @@ app.get("/home", async (req, res) => {
         hour12: true,
       });
       book.read_date = localDate;
+    });*/
+    // Pass raw read_date as ISO string
+    result.rows.forEach((book) => {
+      book.read_date_iso = new Date(book.read_date).toISOString();
     });
     res.render("home", { books: result.rows, sortBy, user: req.user });
   } catch (err) {
