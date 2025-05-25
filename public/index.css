@@ -328,7 +328,7 @@ footer {
   header h1 a {
     display: inline-block;
     float: left;
-    
+    font-size: 24px;
   }
   nav {
     justify-content: flex-end; /* Align everything to the right */
